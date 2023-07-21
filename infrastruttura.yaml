@@ -137,3 +137,8 @@ Resources:
           Value: "ScottodAbusco"
         - Key: "Environment"
           Value: "DevOpsAcademy"  
+
+ Outputs:
+  ALBEndpoint:
+    Description: "Application Load Balancer endpoint"
+    Value: !GetAtt MyALB.DNSName
