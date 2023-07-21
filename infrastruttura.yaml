@@ -9,6 +9,13 @@ Resources:
       CidrBlock: 10.0.0.0/16
       EnableDnsSupport: true
       EnableDnsHostnames: true
+      Tags:
+        - Key: "Name"
+          Value: "Gianluca"
+        - Key: "Cognome"
+          Value: "ScottodAbusco"
+        - Key: "Environment"
+          Value: "DevOpsAcademy"  
 
   Subnet1:
     Type: AWS::EC2::Subnet
@@ -17,6 +24,11 @@ Resources:
       CidrBlock: 10.0.1.0/24
       AvailabilityZone: "us-east-1a"
       MapPublicIpOnLaunch: true
+      Tags:
+        - Key: "Name"
+          Value: "Subnet1"
+        - Key: "Environment"
+          Value: "DevOpsAcademy"  
 
   Subnet2:
     Type: AWS::EC2::Subnet
@@ -25,9 +37,18 @@ Resources:
       CidrBlock: 10.0.2.0/24
       AvailabilityZone: "us-east-1b"
       MapPublicIpOnLaunch: true
+      Tags:
+        - Key: "Name"
+          Value: "Subnet2"
+        - Key: "Environment"
+          Value: "DevOpsAcademy" 
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: "MyInternetGateway"
 
   VPCGatewayAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
@@ -67,6 +88,22 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
           yum update -y
+          yum install -y httpd php php-mysql
+          systemctl enable httpd
+          systemctl start httpd
+          echo "<?php phpinfo(); ?>" > /var/www/html/index.php
+          chkconfig httpd on
+
+  MyAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchConfigurationName: !Ref MyLaunchConfig
+      MinSize: "2"
+      MaxSize: "5"
+      DesiredCapacity: "2"
+      VPCZoneIdentifier:
+        - !Ref Subnet1  
+        - !Ref Subnet2         
   
   EC2InstancesSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -129,16 +166,7 @@ Resources:
         - Type: forward
           TargetGroupArn: !Ref MyTargetGroup  
 
-  KeyName: "DevOpsDemo"
-      Tags:
-        - Key: "Name"
-          Value: "Gianluca"
-        - Key: "Cognome"
-          Value: "ScottodAbusco"
-        - Key: "Environment"
-          Value: "DevOpsAcademy"  
-
- Outputs:
+Outputs:
   ALBEndpoint:
     Description: "Application Load Balancer endpoint"
     Value: !GetAtt MyALB.DNSName
