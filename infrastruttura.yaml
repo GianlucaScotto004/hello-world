@@ -128,3 +128,12 @@ Resources:
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref MyTargetGroup  
+
+  KeyName: "DevOpsDemo"
+      Tags:
+        - Key: "Name"
+          Value: "Gianluca"
+        - Key: "Cognome"
+          Value: "ScottodAbusco"
+        - Key: "Environment"
+          Value: "DevOpsAcademy"  
