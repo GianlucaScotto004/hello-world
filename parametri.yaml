@@ -22,6 +22,7 @@ Parameters:
   InstanceTypeParameter:
     Type: String
     Default: t2.micro
-    AllowedValues:
+    AllowedValues:  
+      - t2.small
       - t2.micro
     Description: Enter t2.micro. Default is t2.micro.  
