@@ -1,6 +1,16 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Creazione di una VPC con una due subnet,creazione di un gruppo di Autoscaling con istanze EC2 che supportano Apache e PHP,creazione di un Application Load Balancer (ALB) collegato a un gruppo di Autoscaling EC2
+Parameters:
+#  AMI:
+#    Type: String
 
+#  InstanceType:
+#    Type: String
+
+  AMI:
+    Description: Amazon Machine Image ID
+    Type: String
+    Default: "ami-06935448000742e6b"
 Resources:
   MyVPC:
     Type: AWS::EC2::VPC
