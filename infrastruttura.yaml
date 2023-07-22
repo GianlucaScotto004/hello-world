@@ -75,14 +75,20 @@ Resources:
         - !Ref Subnet1
         - !Ref Subnet2
       RouteTableId: !Ref PublicRouteTable
-
+      
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group per le istanze EC2
+      VpcId: !Ref MyVPC
+      
   MyLaunchConfiguration:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       ImageId: ami-0abcdef1234567890
       InstanceType: t2.micro      
       SecurityGroups:
-        - !Ref EC2InstancesSecurityGroup    
+        - !Ref MySecurityGroup    
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
@@ -104,23 +110,7 @@ Resources:
         - !Ref Subnet1  
         - !Ref Subnet2         
   
-  EC2InstancesSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: EC2InstancesSecurityGroup
-      Description: "Allow HTTP and HTTPS traffic"
-      GroupName: !Ref MYLaunchConfiguration
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: 0.0.0.0/0
-
-  LoadBalancerSecurityGroup:
+ LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: ALB Security Group
