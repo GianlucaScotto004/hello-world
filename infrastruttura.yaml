@@ -163,5 +163,5 @@ Outputs:
     Value: !Ref Subnet2
     Description: The ID of the subnet 2
   ALBEndpoint:
-    Description: "Application Load Balancer endpoint"
-    Value: !GetAtt MyALB.DNSName
+    Description: "Load Balancer endpoint URL"
+    Value: !GetAtt MyLoadBalancer.DNSName
