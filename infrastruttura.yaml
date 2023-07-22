@@ -159,7 +159,7 @@ Outputs:
   Subnet1:
     Value: !Ref Subnet1
     Description: The ID subnet 1
-  MyPublicSubnet2:
+  Subnet2:
     Value: !Ref PublicSubnet2
     Description: The ID of the subnet 2
   ALBEndpoint:
