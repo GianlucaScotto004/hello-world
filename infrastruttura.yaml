@@ -1,6 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Creazione di una VPC con una due subnet.Creazione di un gruppo di Autoscaling con istanze EC2 che supportano Apache e PHP.
-Creazione di un Application Load Balancer (ALB) collegato a un gruppo di Autoscaling EC2.
+Description: Creazione di una VPC con una due subnet.Creazione di un gruppo di Autoscaling con istanze EC2 che supportano Apache e PHP. Creazione di un Application Load Balancer (ALB) collegato a un gruppo di Autoscaling EC2.
 
 Resources:
   MyVPC:
