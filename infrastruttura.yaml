@@ -34,7 +34,7 @@ Resources:
     Properties:
       VpcId: !Ref MyVPC
       CidrBlock: 10.0.2.0/24
-      AvailabilityZone: "us-wast-2b"
+      AvailabilityZone: "us-west-2b"
       MapPublicIpOnLaunch: true
       Tags:
         - Key: "Name"
@@ -82,13 +82,13 @@ Resources:
       GroupDescription: Security group per le istanze EC2
       VpcId: !Ref MyVPC
       
-  MyLaunchConfiguration:
+  MyLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      ImageId: ami-0abcdef1234567890
-      InstanceType: t2.micro      
+      ImageId: ami-06935448000742e6b
+      InstanceType: t2.micro
       SecurityGroups:
-        - !Ref MySecurityGroup    
+        - !Ref MySecurityGroup
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
@@ -114,22 +114,31 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets:
-        - !Ref MySubnet1   
-        - !Ref MySubnet2
+        - !Ref Subnet1   
+        - !Ref Subnet2
       SecurityGroups:
-        - !Ref LoadBalancerSecurityGroup   
+        - !Ref MySecurityGroup   
       Type: application   
 
   MyTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Vpc: !Ref MyVPC   
+      Name: MyTargetGroup
+      VpcId: !Ref MyVPC
+      TargetType: instance
       Port: 80           
       Protocol: HTTP     
       HealthCheckIntervalSeconds: 30
       HealthCheckProtocol: HTTP
       HealthCheckPath: /health   
-
+      Tags:
+        - Key: Nome
+          Value: "Gianluca"
+        - Key: Cognome
+          Value: "ScottodAbusco"
+        - Key: Environment
+          Value: DevOpsAcademy
+          
   MyListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
@@ -141,6 +150,18 @@ Resources:
           TargetGroupArn: !Ref MyTargetGroup  
 
 Outputs:
+  MyAutoScalingGroup:
+    Value: !Ref MyAutoScalingGroup
+    Description: Auto Scaling Group for the application instances
+  MyVPC:
+    Value: !Ref MyVPC
+    Description: The ID of the VPC
+  Subnet1:
+    Value: !Ref Subnet1
+    Description: The ID subnet 1
+  MyPublicSubnet2:
+    Value: !Ref PublicSubnet2
+    Description: The ID of the subnet 2
   ALBEndpoint:
     Description: "Application Load Balancer endpoint"
     Value: !GetAtt MyALB.DNSName
