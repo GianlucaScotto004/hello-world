@@ -1,5 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Creazione di una VPC con una due subnet,creazione di un gruppo di Autoscaling con istanze EC2 che supportano Apache e PHP,creazione di un Application Load Balancer (ALB) collegato a un gruppo di Autoscaling EC2
+
 Parameters:
 #  AMI:
 #    Type: String
@@ -11,6 +12,15 @@ Parameters:
     Description: Amazon Machine Image ID
     Type: String
     Default: "ami-06935448000742e6b"
+
+  InstanceTypeParameter:
+    Type: String
+    Default: "t2.micro"
+    AllowedValues:  
+      - t2.small
+      - t2.micro
+      - t2.large 
+      
 Resources:
   MyVPC:
     Type: AWS::EC2::VPC
@@ -91,11 +101,16 @@ Resources:
     Properties:
       GroupDescription: Security group per le istanze EC2
       VpcId: !Ref MyVPC
-      
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
   MyLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      ImageId: ami-06935448000742e6b
+      ImageId: !Ref AMI
       InstanceType: t2.micro
       SecurityGroups:
         - !Ref MySecurityGroup
@@ -160,18 +175,6 @@ Resources:
           TargetGroupArn: !Ref MyTargetGroup  
 
 Outputs:
-  MyAutoScalingGroup:
-    Value: !Ref MyAutoScalingGroup
-    Description: Auto Scaling Group for the application instances
-  MyVPC:
-    Value: !Ref MyVPC
-    Description: The ID of the VPC
-  Subnet1:
-    Value: !Ref Subnet1
-    Description: The ID subnet 1
-  Subnet2:
-    Value: !Ref Subnet2
-    Description: The ID of the subnet 2
   ALBEndpoint:
     Description: "Load Balancer endpoint URL"
     Value: !GetAtt MyLoadBalancer.DNSName
