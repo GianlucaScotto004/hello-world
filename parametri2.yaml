@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template for parameters used in the main CloudFormation stack
+
+Parameters:
+  AMI:
+    Description: Amazon Machine Image ID
+    Type: String
+    Default: "ami-0ae49954dfb447966"
+
+  InstanceTypeParameter:
+    Type: String
+    Default: "t2.micro"
+    AllowedValues:  
+      - t2.small
+      - t2.micro
+      - t2.large
+    
