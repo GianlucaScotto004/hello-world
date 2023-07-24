@@ -11,7 +11,7 @@ Parameters:
   AMI:
     Description: Amazon Machine Image ID
     Type: String
-    Default: "ami-06935448000742e6b"
+    Default: "ami-0ae49954dfb447966"
 
   InstanceTypeParameter:
     Type: String
@@ -88,14 +88,18 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
 
-  SubnetsRouteTableAssociation:
+  SubnetRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: 
-        - !Ref Subnet1
-        - !Ref Subnet2
+      SubnetId: !Ref Subnet1
       RouteTableId: !Ref PublicRouteTable
-      
+
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet2
+      RouteTableId: !Ref PublicRouteTable
+
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -142,8 +146,23 @@ Resources:
         - !Ref Subnet1   
         - !Ref Subnet2
       SecurityGroups:
-        - !Ref MySecurityGroup   
-      Type: application   
+        - !Ref  LoadBalancerSecurityGroup   
+      Type: application 
+
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for the load balancer
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+      VpcId: !Ref MyVPC
 
   MyTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
